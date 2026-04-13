@@ -95,7 +95,7 @@ def reset_total():
 
 # 🏷️ título
 st.title(" LaCalcu")
-st.caption("Calculadora inteligente 🚀")
+st.caption("Calculadora inteligente ")
 
 # 🖥️ pantalla
 st.markdown(f'<div class="display">{st.session_state.expresion}</div>', unsafe_allow_html=True)
