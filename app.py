@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="LaCalcu", layout="centered")
 
-# 🎨 ESTILO
+# ESTILO
 st.markdown("""
 <style>
 .stApp {
@@ -56,14 +56,14 @@ st.markdown("""
 <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
 """, unsafe_allow_html=True)
 
-# 🧠 memoria
+# memoria
 if "expresion" not in st.session_state:
     st.session_state.expresion = ""
 
 if "historial" not in st.session_state:
     st.session_state.historial = []
 
-# 🔘 funciones
+#  funciones
 def agregar(valor):
     st.session_state.expresion += str(valor)
 
@@ -94,7 +94,7 @@ def reset_total():
     st.session_state.clear()
 
 # 🏷️ título
-st.title("🧮 LaCalcu")
+st.title(" LaCalcu")
 st.caption("Calculadora inteligente 🚀")
 
 # 🖥️ pantalla
@@ -128,20 +128,20 @@ with c2:
     st.button("RESET", on_click=reset_total, use_container_width=True)
 
 # 📜 HISTORIAL
-st.subheader("📜 Historial")
+st.subheader(" Historial")
 
 st.markdown('<div class="historial">', unsafe_allow_html=True)
 
 for item in reversed(st.session_state.historial):
-    st.write(f"🧮 {item}")
+    st.write(f" {item}")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-if st.button("🗑️ Borrar historial"):
+if st.button(" Borrar historial"):
     st.session_state.historial = []
 
 # 📊 GRÁFICAS
-st.subheader("📊 Graficar función")
+st.subheader(" Graficar función")
 
 funcion = st.text_input("Ejemplo: sin(x), x**2, cos(x)+x")
 
