@@ -1,10 +1,12 @@
 import streamlit as st
 import math
 import time
+import numpy as np
+import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Super Calculadora", layout="centered")
+st.set_page_config(page_title="LaCalcu", layout="centered")
 
-# 🎨 ESTILO MÓVIL
+# 🎨 ESTILO
 st.markdown("""
 <style>
 .stApp {
@@ -13,7 +15,6 @@ st.markdown("""
     margin: auto;
 }
 
-/* Pantalla */
 .display {
     background-color: black;
     color: #22c55e;
@@ -24,7 +25,6 @@ st.markdown("""
     margin-bottom: 10px;
 }
 
-/* Botones */
 button {
     height: 65px;
     font-size: 20px !important;
@@ -41,7 +41,6 @@ button:active {
     color: black !important;
 }
 
-/* Historial */
 .historial {
     background-color: #020617;
     padding: 10px;
@@ -52,16 +51,9 @@ button:active {
 </style>
 """, unsafe_allow_html=True)
 
-# 🔊 SONIDO (click)
+# 🔊 SONIDO
 st.markdown("""
 <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
-<script>
-function playSound(){
-    var audio = document.getElementById("clickSound");
-    audio.currentTime = 0;
-    audio.play();
-}
-</script>
 """, unsafe_allow_html=True)
 
 # 🧠 memoria
@@ -77,9 +69,17 @@ def agregar(valor):
 
 def calcular():
     try:
-        resultado = str(eval(st.session_state.expresion))
+        exp = st.session_state.expresion
+
+        # funciones científicas
+        exp = exp.replace("√", "math.sqrt")
+        exp = exp.replace("sin", "math.sin")
+        exp = exp.replace("cos", "math.cos")
+        exp = exp.replace("tan", "math.tan")
+
+        resultado = str(eval(exp))
         st.session_state.historial.append(f"{st.session_state.expresion} = {resultado}")
-        
+
         with st.spinner("Calculando..."):
             time.sleep(0.3)
 
@@ -93,11 +93,16 @@ def limpiar():
 def reset_total():
     st.session_state.clear()
 
+# 🏷️ título
+st.title("🧮 LaCalcu")
+st.caption("Calculadora inteligente 🚀")
+
 # 🖥️ pantalla
 st.markdown(f'<div class="display">{st.session_state.expresion}</div>', unsafe_allow_html=True)
 
-# 🔢 botones
+# 🔢 botones (con modo científico)
 botones = [
+    ["sin(", "cos(", "tan(", "√("],
     ["7", "8", "9", "/"],
     ["4", "5", "6", "*"],
     ["1", "2", "3", "-"],
@@ -113,7 +118,7 @@ for fila in botones:
             else:
                 st.button(val, on_click=agregar, args=(val,), use_container_width=True)
 
-# ➗ fila final
+# ➗ botones finales
 c1, c2 = st.columns(2)
 
 with c1:
@@ -122,15 +127,40 @@ with c1:
 with c2:
     st.button("RESET", on_click=reset_total, use_container_width=True)
 
-# 📜 historial
+# 📜 HISTORIAL
 st.subheader("📜 Historial")
 
 st.markdown('<div class="historial">', unsafe_allow_html=True)
 
 for item in reversed(st.session_state.historial):
-    st.write(item)
+    st.write(f"🧮 {item}")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
 if st.button("🗑️ Borrar historial"):
     st.session_state.historial = []
+
+# 📊 GRÁFICAS
+st.subheader("📊 Graficar función")
+
+funcion = st.text_input("Ejemplo: sin(x), x**2, cos(x)+x")
+
+if st.button("Graficar"):
+    try:
+        x = np.linspace(-10, 10, 100)
+
+        # adaptar funciones
+        func = funcion.replace("sin", "np.sin")
+        func = func.replace("cos", "np.cos")
+        func = func.replace("tan", "np.tan")
+
+        y = eval(func)
+
+        fig, ax = plt.subplots()
+        ax.plot(x, y)
+        ax.set_title("Gráfica")
+
+        st.pyplot(fig)
+
+    except:
+        st.error("Función no válida")
