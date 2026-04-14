@@ -51,11 +51,6 @@ button:active {
 </style>
 """, unsafe_allow_html=True)
 
-# 🔊 SONIDO
-st.markdown("""
-<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
-""", unsafe_allow_html=True)
-
 # memoria
 if "expresion" not in st.session_state:
     st.session_state.expresion = ""
@@ -63,7 +58,7 @@ if "expresion" not in st.session_state:
 if "historial" not in st.session_state:
     st.session_state.historial = []
 
-#  funciones
+# funciones
 def agregar(valor):
     st.session_state.expresion += str(valor)
 
@@ -71,7 +66,6 @@ def calcular():
     try:
         exp = st.session_state.expresion
 
-        # funciones científicas
         exp = exp.replace("√", "math.sqrt")
         exp = exp.replace("sin", "math.sin")
         exp = exp.replace("cos", "math.cos")
@@ -94,13 +88,29 @@ def reset_total():
     st.session_state.clear()
 
 # 🏷️ título
-st.title(" LaCalcu")
-st.caption("Calculadora inteligente ")
+st.title("LaCalcu")
+st.caption("Calculadora inteligente")
+
+# 🧠 INPUT DE TECLADO (AQUÍ ESTÁ LA MAGIA)
+entrada_teclado = st.text_input(
+    "Escribe tu operación:",
+    value=st.session_state.expresion,
+    key="input_teclado"
+)
+
+# sincronizar lo escrito con la calculadora
+st.session_state.expresion = entrada_teclado
+
+# si el usuario presiona Enter, Streamlit recarga → calculamos automáticamente
+if entrada_teclado:
+    if entrada_teclado.endswith("="):
+        st.session_state.expresion = entrada_teclado[:-1]
+        calcular()
 
 # 🖥️ pantalla
 st.markdown(f'<div class="display">{st.session_state.expresion}</div>', unsafe_allow_html=True)
 
-# 🔢 botones (con modo científico)
+# 🔢 botones
 botones = [
     ["sin(", "cos(", "tan(", "√("],
     ["7", "8", "9", "/"],
@@ -128,20 +138,20 @@ with c2:
     st.button("RESET", on_click=reset_total, use_container_width=True)
 
 # 📜 HISTORIAL
-st.subheader(" Historial")
+st.subheader("Historial")
 
 st.markdown('<div class="historial">', unsafe_allow_html=True)
 
 for item in reversed(st.session_state.historial):
-    st.write(f" {item}")
+    st.write(item)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-if st.button(" Borrar historial"):
+if st.button("Borrar historial"):
     st.session_state.historial = []
 
 # 📊 GRÁFICAS
-st.subheader(" Graficar función")
+st.subheader("Graficar función")
 
 funcion = st.text_input("Ejemplo: sin(x), x**2, cos(x)+x")
 
@@ -149,7 +159,6 @@ if st.button("Graficar"):
     try:
         x = np.linspace(-10, 10, 100)
 
-        # adaptar funciones
         func = funcion.replace("sin", "np.sin")
         func = func.replace("cos", "np.cos")
         func = func.replace("tan", "np.tan")
