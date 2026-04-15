@@ -173,3 +173,28 @@ if st.button("Graficar"):
 
     except:
         st.error("Función no válida")
+from openai import OpenAI
+import os
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+st.subheader("🤖 IA Matemática")
+
+pregunta = st.text_area("Haz una pregunta teórica (ej: explica la ley de senos)")
+
+if st.button("Preguntar a la IA"):
+    if pregunta:
+        with st.spinner("Pensando..."):
+            try:
+                respuesta = client.chat.completions.create(
+                    model="gpt-4.1-mini",
+                    messages=[
+                        {"role": "system", "content": "Eres un profesor experto en matemáticas que explica paso a paso de forma sencilla."},
+                        {"role": "user", "content": pregunta}
+                    ]
+                )
+
+                st.write(respuesta.choices[0].message.content)
+
+            except Exception as e:
+                st.error("Error con la IA")
